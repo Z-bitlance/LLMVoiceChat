@@ -33,7 +33,6 @@ def copyVoiceByMp3(voiceUrl):
      # 将合成的音频文件保存到本地文件
      with open("output1.mp3", "wb") as f:
          f.write(audio)
-
 def TTSWithCopiedVoice(voiceId,text):
 
      target_model = "cosyvoice-v2"
@@ -45,6 +44,9 @@ def TTSWithCopiedVoice(voiceId,text):
      # 将合成的音频文件保存到本地文件
      with open(f'output_{time.strftime("%Y%m%d_%H%M%S")}.mp3', "wb") as f:
          f.write(audio)
+
+
+
 
 
 def listCopiedVoices():
@@ -73,13 +75,9 @@ def updateVoice(voiceUrl):
      print("request id为：", service.get_last_request_id())
 
 # {'gmt_create': '2025-06-13 13:53:34', 'voice_id': 'cosyvoice-v2-prefix-e929f25649664a16adaf04fc563870f6', 'gmt_modified': '2025-06-13 13:53:41', 'status': 'OK'}]
-
+listCopiedVoices()
 # url="https://voice-training-data.oss-cn-beijing.aliyuncs.com/bilibili_video_20250612_230524_%E4%B8%9C%E9%9B%AA%E8%8E%B2.mp3?Expires=1749794547&OSSAccessKeyId=TMP.3KoEB3jNfuGxPxcdrmYozJ9cjXTcPsJfxXH2VgUyfRwa9o3ApMEcirJFMCdmBREefrGg8216stAvb6PmLEHkANv4AGKfKe&Signature=R4NIN3ugTT5%2FALBM3oKdgWM427s%3D"
 # copyVoiceByMp3(url)
-
-def main():
-     voiceId="cosyvoice-v2-prefix-e929f25649664a16adaf04fc563870f6"
-     text="哎，你是不是脑子有什么大病啊！？"
-     TTSWithCopiedVoice(voiceId, text)
-
-listCopiedVoices()
+voiceId="cosyvoice-v2-prefix-e929f25649664a16adaf04fc563870f6"
+text="哎，你是不是脑子有什么大病啊！？"
+TTSWithCopiedVoice(voiceId,text)
