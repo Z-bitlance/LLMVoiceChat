@@ -55,6 +55,7 @@ async def text_to_speech(request: TTSRequest):
         #     filename=output_file
         # )
     except Exception as e:
+        print()
         raise HTTPException(status_code=500, detail=f"语音生成失败: {str(e)}")
 
 

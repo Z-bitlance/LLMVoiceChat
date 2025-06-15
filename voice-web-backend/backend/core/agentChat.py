@@ -1,4 +1,5 @@
 import os
+import time
 from http import HTTPStatus
 from dashscope import Application
 
@@ -7,7 +8,7 @@ character = {'nekogirl':'5ffe587bb14941cda6012bffe3ac3f46', 'libai': 'e2eed5eed7
 
 
 class AgentChat:
-    def __init__(self, api_key="sk-d03c4fe2b7424948a9e3fbc698e35f6f", character_name='nekogirl'):
+    def __init__(self, api_key="sk-d03c4fe2b7424948a9e3fbc698e35f6f",character_id="", character_name='nekogirl'):
         """初始化聊天代理
 
         Args:
@@ -15,7 +16,7 @@ class AgentChat:
             app_id: 应用ID
         """
         self.api_key = api_key
-        self.app_id = character[character_name] if character_name in character.keys else app_id[0]  # 默认选择第一个角色
+        self.app_id = character_id if character_id is not None else character[character_name] if character_name in character.keys() else app_id[0]  # 默认选择第一个角色
         self.session_id = None
         self.last_response = None  # 添加存储最后回复的属性
 
@@ -54,6 +55,7 @@ class AgentChat:
             else:
                 self.session_id = response.output.session_id
                 self.last_response = response.output.text
+                # print(f'请求成功: , message={response.output.text}')
                 return self.last_response
         else:
             # 继续已有会话
@@ -68,7 +70,9 @@ class AgentChat:
                 print(f'请求出错: code={response.status_code}, message={response.message}')
                 return f"请求错误: {response.message}"
             else:
-                return response.output.text
+                self.last_response = response.output.text
+                # print(f'请求成功: , message={response.output.text}')
+                return self.last_response
 
     def reset_session(self):
         """重置会话，开始新的对话"""
@@ -127,3 +131,5 @@ if __name__ == '__main__':
         if user_input.lower() == '退出':
             print("对话结束。")
             break
+        else:
+            print("请求成功，输出对话为：",agent.send_message(user_input),f'\n输出时间:{time.strftime("%Y%m%d_%H%M%S")}')

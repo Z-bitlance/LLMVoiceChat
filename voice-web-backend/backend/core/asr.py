@@ -10,6 +10,10 @@ import queue
 
 class ASRmanager:
     def __init__(self):
+        dashscope.api_key = "sk-d03c4fe2b7424948a9e3fbc698e35f6f"
+        # slient or speaking
+        self.state = "silent"
+        self.recognized_content=None
         self.recognized_text = None
         self.detection_thread = None
         self.asr_thread = None
@@ -17,11 +21,15 @@ class ASRmanager:
         self.asr_callback = None
         self.translator = None
 
-        self.stream=None
-        self.mic=None
+        self.stream = None
+        self.mic = None
         
+        # 新增：标记是否有新的识别结果
+        self.has_new_result = False
+        # 新增：外部回调函数，用于在识别到新文本时通知外部程序
+        self.external_callback = None
+
         # 添加状态属性
-        self.state = "idle"  # 可能的状态: idle, user_speaking, ai_speaking
 
         self.init_asr()
         self.audio_buffer = queue.Queue()
@@ -56,6 +64,7 @@ class ASRmanager:
                     self.manager.stream = self.manager.mic.open(
                         format=pyaudio.paInt16, channels=1, rate=16000, input=True, frames_per_buffer=3200
                     )
+
                 def on_close(self):
                     print("语音识别已关闭")
                     self.manager.stream.stop_stream()
@@ -63,11 +72,19 @@ class ASRmanager:
                     self.manager.mic.terminate()
                     self.manager.stream = None
                     self.manager.mic = None
-                    
+
                 def on_event(self, request_id, transcription_result, translation_result, usage):
                     if transcription_result is not None:
                         self.manager.recognized_text = transcription_result.text
                         print(f"识别到: {self.manager.recognized_text}")
+                        
+                        # 实时识别结果也可以触发回调，但不设置has_new_result标志
+                        # 因为这时还在持续识别中，句子可能未完成
+                        if self.manager.external_callback and len(self.manager.recognized_text.strip()) > 0:
+                            try:
+                                self.manager.external_callback(self.manager.recognized_text)
+                            except Exception as e:
+                                print(f"实时识别回调错误: {e}")
 
                         # 如果AI正在说话，打断它
                         # if hasattr(self.manager, 'interrupt_ai') and self.manager.state == "ai_speaking":
@@ -153,7 +170,7 @@ class ASRmanager:
         silence_threshold = 500  # 静音阈值，需根据实际环境调整
         silence_frames = 0
         talking_frames = 0
-        silence_duration = 1.0  # 多少秒的沉默后处理识别文本
+        silence_duration = 2.0  # 多少秒的沉默后处理识别文本
         silence_frames_limit = int(silence_duration / 0.05)  # 以50ms为单位的帧数
 
         while self.running:
@@ -165,8 +182,8 @@ class ASRmanager:
                 audio_data = self.audio_buffer.get()
                 volume = sum(abs(int.from_bytes(audio_data[i:i + 2], 'little', signed=True))
                              for i in range(0, len(audio_data), 2)) / (len(audio_data) / 2)
-                print(f"<UNK>: {volume}")
-
+                # print(f"\rvolume: {volume:.4f}      ", end="", flush=True)
+                # print(f"volume: {volume:.4f}      ")
                 # 根据音量判断用户是否在说话
                 if volume > silence_threshold:
                     talking_frames += 1
@@ -177,26 +194,34 @@ class ASRmanager:
                         # if self.state == "ai_speaking":
                         #     print("检测到用户说话，打断AI...")
                         #     self.interrupt_ai()
-                        # self.state = "user_speaking"
+                        self.state = "user_speaking"
                 else:
                     silence_frames += 1
                     talking_frames = 0
 
                     # 如果用户停止讲话超过设定的时间，并且之前状态是用户讲话
-                    if silence_frames > silence_frames_limit:
+                    if silence_frames > silence_frames_limit and self.state == "user_speaking":
                         print(f"检测到用户停止说话，沉默帧数: {silence_frames}")
-                        print(f"当前识别文本: '{self.recognized_text}'")
-
-                        # 如果有识别到的文本，则处理
+                        print(f"当前识别文本: '{self.recognized_text}'")                        # 如果有识别到的文本，则处理
                         if self.recognized_text and len(self.recognized_text.strip()) > 0:
-                            print("处理识别到的文本...")
-                            return self.recognized_text
+                            self.recognized_content = self.recognized_text.strip()
+                            print("处理识别到的文本: ", self.recognized_content)
+                            # 设置新结果标志
+                            self.has_new_result = True
+                            # 如果设置了外部回调，则调用
+                            if self.external_callback:
+                                try:
+                                    self.external_callback(self.recognized_content)
+                                except Exception as e:
+                                    print(f"调用外部回调函数时出错: {e}")
+                            # 不再返回结果，让外部调用获取方法来获取结果
+
+                        self.state = "silent"
 
                 time.sleep(0.05)
             except Exception as e:
                 print(f"检测用户语音错误: {e}")
                 time.sleep(0.1)
-        return None
 
     def process_one_time_audio(self, audio_data):
         """处理一次性发送的音频数据进行识别
@@ -282,6 +307,40 @@ class ASRmanager:
             print(f"处理一次性音频数据错误: {e}")
             return {"status": "error", "message": str(e)}
 
+    def get_recognized_text(self):
+        """获取当前识别的文本，如果有新的识别结果会重置标志
+        
+        Returns:
+            str: 识别到的文本内容，如果没有新结果则返回None
+        """
+        if self.has_new_result:
+            self.has_new_result = False  # 重置新结果标志
+            return self.recognized_content
+        return None
+    
+    def get_latest_text(self):
+        """获取最新识别的文本，无论是否是新结果
+        
+        Returns:
+            str: 最新识别到的文本内容
+        """
+        return self.recognized_content
+    
+    def set_text_callback(self, callback_function):
+        """设置文本识别回调函数
+        
+        Args:
+            callback_function: 当识别到新文本时要调用的回调函数，
+                              该函数应接受一个参数（识别的文本）
+        """
+        self.external_callback = callback_function
+    
+    def reset_recognition(self):
+        """重置识别状态和结果"""
+        self.recognized_text = None
+        self.recognized_content = None
+        self.has_new_result = False
+
 
 if __name__ == "__main__":
     # 确保API密钥已设置
@@ -291,7 +350,7 @@ if __name__ == "__main__":
         # 创建对话管理器
         manager = ASRmanager()
         print("创建ASR管理器成功")
-        
+
         # 启动对话系统
         success = manager.start_asr()
         if success:
@@ -299,7 +358,7 @@ if __name__ == "__main__":
         else:
             print("ASR系统启动失败")
             exit(1)
-            
+
         # 保持程序运行
         print("输入'q'退出系统, 输入'sp'停止语音识别:")
         while True:
@@ -315,7 +374,7 @@ if __name__ == "__main__":
                 print("语音识别已重新启动")
             elif command.lower() == 'text':
                 print(f"当前识别文本: {manager.recognized_text}")
-                
+
     except KeyboardInterrupt:
         print("\n检测到Ctrl+C，正在退出...")
     except Exception as e:
