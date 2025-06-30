@@ -6,10 +6,9 @@ export default defineConfig(({ command, mode }) => {
   const env = loadEnv(mode, process.cwd(), '');
   
   return {
-    plugins: [vue()],
-    server: {
-      port: 5173,
-      strictPort: true,
+    plugins: [vue()],    server: {
+      port: 3000,
+      strictPort: false,
       proxy: {
         '/api': {
           target: 'http://localhost:8000',

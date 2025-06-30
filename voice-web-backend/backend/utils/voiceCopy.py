@@ -5,6 +5,7 @@ from dashscope.audio.tts_v2 import VoiceEnrollmentService
 import time
 
 Api_key = 'sk-d03c4fe2b7424948a9e3fbc698e35f6f'  # 如果您没有配置环境变量，请在此处用您的API-KEY进行替换
+dashscope.api_key = Api_key
 
 # object,url
 # archive_yunli_24.wav,https://voice-training-data.oss-cn-beijing.aliyuncs.com/archive_yunli_24.wav?Expires=1749730696&OSSAccessKeyId=TMP.3KsPDe8bkfz4iXfFJDPaEckPJ4Z6irKw9RwUmGVHQzqcZBxMdvmwNHu45aH5hW2WDLSadYneZe8g6g3sYkRpox63XTES3S&Signature=3dCEtUW1XcpjHX2SNF08UJD0ZiA%3D
@@ -79,7 +80,10 @@ def updateVoice(voiceUrl):
 
 def main():
      voiceId="cosyvoice-v2-prefix-e929f25649664a16adaf04fc563870f6"
-     text="哎，你是不是脑子有什么大病啊！？"
+     # text="我操你妈！！你爱看不看不看就滚，不要在直播间刷什么存在感！没教养的东西！！"
+     text = "那就随便你了，反正又不关我的事"
      TTSWithCopiedVoice(voiceId, text)
 
-listCopiedVoices()
+# listCopiedVoices()
+if __name__ == '__main__':
+    main()

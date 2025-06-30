@@ -5,10 +5,10 @@ const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || '/api';
 const apiTimeout = parseInt(import.meta.env.VITE_API_TIMEOUT || '20000');
 
 // 直接模型API地址（简化版）
-const directModelUrl = 'http://localhost:8001';
+const directModelUrl = 'http://localhost:51001';
 
 // 本地后端API地址
-const localBackendUrl = 'http://localhost:8000/api';
+const localBackendUrl = 'http://localhost:51001/api';
 
 // 创建axios实例
 const apiClient = axios.create({

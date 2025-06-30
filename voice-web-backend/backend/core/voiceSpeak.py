@@ -6,7 +6,7 @@ import os
 import queue
 import re
 
-from playMp3 import MP3Player
+from core.playMp3 import MP3Player
 
 TTS_API_URL = "http://localhost:51000/api/tts"
 
@@ -35,10 +35,14 @@ class VoiceSpeak:
             "voice": "cosyvoice-v2-prefix-e929f25649664a16adaf04fc563870f6",
         }
 
+        print("VoiceSpeak model initialized")
+
 
 
     def set_current_role(self, role):
-        self.current_role = role
+        self.current_role["id"] = role["id"]
+        self.current_role["name"] = role["name"]
+        self.current_role["voice"] = role["voice"]
 
     def response_split(self, text):
         """将AI响应文本分割成多段"""
@@ -67,8 +71,6 @@ class VoiceSpeak:
         audio_queue = queue.Queue()
         try:
             # 请求TTS API生成语音
-            self.tts_request_count += 1
-            print(f"TTS request has been posted, request count is {self.tts_request_count}")
             response = requests.post(TTS_API_URL, json={
                 "text": text,
                 "voice": self.current_role["voice"],
@@ -122,8 +124,6 @@ class VoiceSpeak:
 
                 try:
                     # 请求TTS API生成语音
-                    self.tts_request_count += 1
-                    print(f"TTS request has been posted, request count is {self.tts_request_count}")
                     response = requests.post(TTS_API_URL, json={
                         "text": segment,
                         "voice": self.current_role["voice"],
@@ -222,4 +222,9 @@ class VoiceSpeak:
 
     def set_callback(self, callback):
         self.playing_complete_callback = callback
+        print("callback function has been set")
+
+def test():
+
+
 

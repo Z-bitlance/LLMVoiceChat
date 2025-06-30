@@ -26,11 +26,11 @@ class AgentChat:
         Args:
             character_id: 角色ID
         """
-        if character_id < len(app_id) and app_id[character_id] is not self.app_id:
-            self.app_id = app_id[character_id]
-            self.session_id = None  # 如果角色ID更改，重置会话ID
+        # if character_id < len(app_id) and app_id[character_id] is not self.app_id:
+        self.app_id = character_id
+        self.session_id = None  # 如果角色ID更改，重置会话ID
 
-        print(f"已选择角色: {character[character_id] if character_id < len(character) else character[0]}")
+        print(f"已选择角色: {app_id}")
 
     def send_message(self, text):
         """发送消息并获取响应

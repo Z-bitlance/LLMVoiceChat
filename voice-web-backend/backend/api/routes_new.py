@@ -14,11 +14,12 @@ import importlib.util
 # dialogue_manager_module = importlib.util.module_from_spec(spec)
 # spec.loader.exec_module(dialogue_manager_module)
 # get_dialogue_manager = dialogue_manager_module.get_dialogue_manager
-from core.dialogue_manager_new import get_dialogue_manager
+from core.dialogue_manager_new import get_dialogue_manager, DialogueManager
 
 # 创建路由器
 router = APIRouter()
-dialogue_manager = get_dialogue_manager()
+dialogue_manager = DialogueManager()
+dialogue_manager.charge(model="speak",choice="open")
 
 # 请求模型
 class UserInput(BaseModel):
@@ -123,6 +124,8 @@ async def set_role(role_request: RoleRequest):
         
         # 设置角色
         success = dialogue_manager.set_role(role_request.role_id)
+        print(role_request.role_id)
+        print(f"role_id type: {type(role_request.role_id)}, value: {role_request.role_id}")
         
         if not success:
             raise HTTPException(status_code=404, detail="角色不存在")
