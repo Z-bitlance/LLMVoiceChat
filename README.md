@@ -11,7 +11,7 @@ VoicePut 是一个基于 Python 开发的智能语音对话系统，集成了实
 ### ✨ 核心特性
 
 - 🎤 **实时语音识别**：基于阿里云 DashScope ASR 引擎，支持实时语音转文字
-- 🔊 **多角色语音合成**：基于cosyvoice-v2,支持多种声音角色，包括李白~~、猫娘、东雪莲~~等个性化角色，可在voicecopy自行添加，详情参考https://help.aliyun.com/zh/model-studio/cosyvoice-clone-api
+- 🔊 **多角色语音合成**：基于cosyvoice-v2,支持多种声音角色，包括李白、~~猫娘~~、~~东雪莲~~等个性化角色，可在voicecopy自行添加，详情参考https://help.aliyun.com/zh/model-studio/cosyvoice-clone-api
 - 🤖 **智能对话**：集成大语言模型，支持上下文记忆的自然对话 //(上下文待添加)
 - 🌐 **Web API 接口**：完整的 RESTful API，支持前后端分离
 - 💾 **数据持久化**：SQLite 数据库存储对话历史和用户偏好 //(未上线)
@@ -192,9 +192,9 @@ POST /shutdown
 | 角色ID | 角色名称 | 语音特色 | 角色描述 |
 |--------|----------|----------|----------|
 | libai | 李白模拟 | 古风男声 | 模拟唐代诗人李白的说话风格 |
-~~| nekogirl | 猫娘 | 可爱女声 | 二次元猫娘角色，语气可爱 |~~
-~~| dongxuelian | 东雪莲 | 温柔女声 | 温柔知性的女性角色 |~~
-~~| yunli | 云璃 | 清澈女声 | 清新自然的女性角色 |~~
+| nekogirl | 猫娘 | 可爱女声 | ~~二次元猫娘角色，语气可爱~~ |
+| dongxuelian | ~~东雪莲~~ | 温柔女声 | ~~温柔知性的~~女性角色 |
+| ~~yunli~~| ~~云璃~~ | 清澈女声 | 清新自然的女性角色 | （未添加）
 | storyteller | 讲故事的人 | 磁性中性 | 适合讲故事的声音 | （未添加）
 | direct_model | 直接模型 | 标准男声 | 标准的AI助手声音 | （未添加）
 
@@ -382,7 +382,7 @@ ls backend/static/logs/sessionID_*.json
 
 ## 👥 作者
 
-- **主要开发者** - [Your Name]
+- **主要开发者** - [Z-bitlance]
 
 ## 🙏 致谢
 
@@ -394,9 +394,9 @@ ls backend/static/logs/sessionID_*.json
 
 如有问题或建议，请通过以下方式联系：
 
-- 提交 Issue: [GitHub Issues](link-to-issues)
-- 邮箱: your-email@example.com
-- 文档: [在线文档](link-to-docs)
+~~- 提交 Issue: [GitHub Issues](link-to-issues)~~
+~~- 邮箱: your-email@example.com~~
+~~- 文档: [在线文档](link-to-docs)~~
 
 ---
 
