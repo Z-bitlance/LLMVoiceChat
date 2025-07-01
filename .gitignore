@@ -16,6 +16,8 @@ voice-web-frontend/node_modules/
 voice-web-backend/backend/core/backend/static/
 *.mp3
 *.wav
+# 例外：允许 .env.example 文件
+!**/backend/.env.example
 backend/
 voice-web-backend/backend/.env
 
