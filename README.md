@@ -1,4 +1,4 @@
-# VoicePut - 智能语音对话系统
+# LLMVoiceChat - 智能语音对话系统
 
 ![Python](https://img.shields.io/badge/Python-3.11+-blue.svg)
 ![FastAPI](https://img.shields.io/badge/FastAPI-Latest-green.svg)
@@ -6,7 +6,7 @@
 
 ## 📖 项目简介
 
-VoicePut 是一个基于 Python 开发的智能语音对话系统，集成了实时语音识别（ASR）、文本转语音（TTS）和大语言模型对话功能。系统支持多角色语音合成，具备完整的 Web API 接口，可实现自然流畅的人机语音交互。
+LLMVoiceChat 是一个基于 Python 开发的智能语音对话系统，集成了实时语音识别（ASR）、文本转语音（TTS）和大语言模型对话功能。系统支持多角色语音合成，具备完整的 Web API 接口，可实现自然流畅的人机语音交互。
 
 ### ✨ 核心特性
 
