@@ -14,7 +14,7 @@ import os
 
 class ASRmanager:
     def __init__(self):
-        load_dotenv('../.env')
+        load_dotenv('voice-web-backend/backend/.env.local')
         apiKey = os.getenv('dashscope_api_key')
 
         dashscope.api_key = apiKey

@@ -5,7 +5,7 @@ from http import HTTPStatus
 from dashscope import Application
 from dotenv import load_dotenv
 # 加载环境变量
-load_dotenv('../.env')
+load_dotenv('voice-web-backend/backend/.env.local')
 apiKey = os.getenv('dashscope_api_key')
 print(f"DashScope API Key: {apiKey}")
 
@@ -83,7 +83,7 @@ class AgentChat:
                 self.last_response = response.output.text
                 # print(f'请求成功: , message={response.output.text}')
                 # 创建session_id对话文件记录
-                with open(f'backend/static/logs/sessionID_{self.session_id}.json', 'w') as f:
+                with open(f'voice-web-backend/backend/static/logs/sessionID_{self.session_id}.json', 'w') as f:
                     json.dump({"SessionID": self.session_id, "Time": time.strftime('%Y-%m-%d %H:%M:%S')}, f, ensure_ascii=False, indent=2)
                 return self.last_response
         else:

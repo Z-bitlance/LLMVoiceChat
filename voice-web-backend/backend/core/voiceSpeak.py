@@ -9,7 +9,7 @@ import re
 from core.playMp3 import MP3Player
 from dotenv import load_dotenv
 # 加载环境变量
-load_dotenv('../.env')
+load_dotenv('voice-web-backend/backend/.env.local')
 apiKey = os.getenv('dashscope_api_key')
 tts_port = os.getenv('tts_port', '51000')
 TTS_API_URL = f"http://localhost:{tts_port}/api/api/tts"
@@ -105,7 +105,7 @@ class VoiceSpeak:
                         output_file = response_data["file_path"]
                     else:
                         # 如果响应不包含路径，保存为临时文件
-                        output_file = f"./VoiceData/temp_{int(time.time())}.mp3"
+                        output_file = f"voice-web-backend/backend/static/audio/temp_{int(time.time())}.mp3"
                         with open(output_file, 'wb') as f:
                             f.write(response.content)
 
@@ -158,7 +158,7 @@ class VoiceSpeak:
                                 output_file = response_data["file_path"]
                             else:
                                 # 如果响应不包含路径，保存为临时文件
-                                output_file = f"./VoiceData/temp_{int(time.time())}.mp3"
+                                output_file = f"voice-web-backend/backend/static/audio/temp_{int(time.time())}.mp3"
                                 with open(output_file, 'wb') as f:
                                     f.write(response.content)
 

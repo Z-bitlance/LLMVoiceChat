@@ -33,15 +33,15 @@ from core.voiceSpeak import VoiceSpeak
 # TTS API地址
 from dotenv import load_dotenv
 # 加载环境变量
-load_dotenv('../.env')
+load_dotenv('voice-web-backend/backend/.env.local')
 apiKey = os.getenv('dashscope_api_key')
 
 # 语音文件存储路径
-VOICE_DATA_DIR = Path("backend/static/audio")
+VOICE_DATA_DIR = Path("voice-web-backend/backend/static/audio")
 VOICE_DATA_DIR.mkdir(parents=True, exist_ok=True)
 
 # 日志文件路径
-LOG_DIR = Path("backend/static/logs")
+LOG_DIR = Path("voice-web-backend/backend/static/logs")
 LOG_DIR.mkdir(parents=True, exist_ok=True)
 
 
