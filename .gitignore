@@ -17,7 +17,7 @@ voice-web-backend/backend/core/backend/static/
 *.mp3
 *.wav
 # 例外：允许 .env.example 文件
-!**/backend/.env.example
+!voice-web-backend/backend/.env.local
 /backend/
 voice-web-backend/backend/.env.local
 

@@ -56,8 +56,8 @@ VoicePut/
 
 1. **克隆项目**
 ```bash
-git clone <repository-url>
-cd VoicePut
+git clone https://github.com/Z-bitlance/LLMVoiceChat.git
+cd LLMVoiceChat
 ```
 
 2. **安装依赖**
@@ -71,14 +71,14 @@ uv sync
 
 3. **配置环境变量**
 ```bash
+# 修改voice-web-backend\backend\.env.example 为 .env.local 
 # 设置阿里云 API Key
 export DASHSCOPE_API_KEY="your-api-key-here"
 ```
 
 4. **启动后端服务**
 ```bash
-cd voice-web-backend/backend
-python main_new.py
+python voice-web-backend/backend/main_new.py
 ```
 
 5. **启动前端服务**
