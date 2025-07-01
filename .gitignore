@@ -6,7 +6,7 @@ dist/
 wheels/
 *.egg-info
 /VoiceData
-
+.env
 
 # Virtual environments
 .venv/
