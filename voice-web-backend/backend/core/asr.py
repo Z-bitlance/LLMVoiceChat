@@ -6,11 +6,18 @@ import threading
 import time
 import pyaudio
 import queue
+from dotenv import load_dotenv
+import os
+# 加载环境变量
+
 
 
 class ASRmanager:
     def __init__(self):
-        dashscope.api_key = "sk-d03c4fe2b7424948a9e3fbc698e35f6f"
+        load_dotenv('../.env')
+        apiKey = os.getenv('dashscope_api_key')
+
+        dashscope.api_key = apiKey
         # slient or speaking
         self.state = "silent"
         self.recognized_content=None
@@ -343,7 +350,7 @@ class ASRmanager:
 
 if __name__ == "__main__":
     # 确保API密钥已设置
-    dashscope.api_key = "sk-d03c4fe2b7424948a9e3fbc698e35f6f"
+
 
     try:
         # 创建对话管理器

@@ -12,6 +12,12 @@ import sys
 
 # 从新的api模块导入路由
 from api.routes_new import router
+from core.voiceOut import router as voice_router
+import dotenv
+
+# 加载环境变量
+dotenv.load_dotenv()
+tts_port = os.getenv('tts_port', '51000')
 
 # 创建FastAPI应用
 app = FastAPI(
@@ -46,6 +52,7 @@ app.mount("/static", StaticFiles(directory=str(static_dir)), name="static")
 
 # 包含所有API路由
 app.include_router(router, prefix="/api")
+app.include_router(voice_router, prefix="/api")
 
 
 @app.get("/")
@@ -206,7 +213,7 @@ if __name__ == "__main__":
     
     try:
         print("启动语音对话系统后端...")
-        port = int(os.environ.get("PORT", 51001))
+        port = int(os.environ.get("PORT", tts_port))
         # 禁用reload，因为它会导致进程无法正确关闭
         uvicorn.run("main_new:app", host="0.0.0.0", port=port, reload=False)
     except KeyboardInterrupt:

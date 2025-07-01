@@ -3,13 +3,18 @@ import time
 import json
 from http import HTTPStatus
 from dashscope import Application
+from dotenv import load_dotenv
+# 加载环境变量
+load_dotenv('../.env')
+apiKey = os.getenv('dashscope_api_key')
+print(f"DashScope API Key: {apiKey}")
 
 app_id = ['5ffe587bb14941cda6012bffe3ac3f46', 'e2eed5eed7bb4fa8a75a7b4cfc8fb235']
 character = {'nekogirl':'5ffe587bb14941cda6012bffe3ac3f46', 'libai': 'e2eed5eed7bb4fa8a75a7b4cfc8fb235'}
 
 
 class AgentChat:
-    def __init__(self, api_key="sk-d03c4fe2b7424948a9e3fbc698e35f6f",character_id="", character_name='nekogirl'):
+    def __init__(self, api_key=apiKey, character_id="", character_name='nekogirl'):
         """初始化聊天代理
 
         Args:
@@ -114,7 +119,7 @@ def call_with_session(text: str = '你是谁？'):
     print("chat_session: ", chat_session, '\n')
     if chat_session is None:
         response = Application.call(
-            api_key="sk-d03c4fe2b7424948a9e3fbc698e35f6f",
+            api_key="###",
             app_id='e2eed5eed7bb4fa8a75a7b4cfc8fb235',
             prompt=text,
         )
@@ -131,7 +136,7 @@ def call_with_session(text: str = '你是谁？'):
             return response.output.text
     else:
         responseNext = Application.call(
-            api_key="sk-d03c4fe2b7424948a9e3fbc698e35f6f",
+            api_key="###",
             app_id='e2eed5eed7bb4fa8a75a7b4cfc8fb235',
             prompt=text,
             session_id=chat_session

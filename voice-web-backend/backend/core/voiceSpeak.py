@@ -7,8 +7,12 @@ import queue
 import re
 
 from core.playMp3 import MP3Player
-
-TTS_API_URL = "http://localhost:51000/api/tts"
+from dotenv import load_dotenv
+# 加载环境变量
+load_dotenv('../.env')
+apiKey = os.getenv('dashscope_api_key')
+tts_port = os.getenv('tts_port', '51000')
+TTS_API_URL = f"http://localhost:{tts_port}/api/api/tts"
 
 # 语音文件存储路径
 VOICE_DATA_DIR = Path("backend/static/audio")

@@ -19,7 +19,7 @@ from core.dialogue_manager_new import get_dialogue_manager, DialogueManager
 # 创建路由器
 router = APIRouter()
 dialogue_manager = DialogueManager()
-dialogue_manager.charge(model="speak",choice="open")
+# dialogue_manager.charge(model="speak",choice="open")
 
 # 请求模型
 class UserInput(BaseModel):

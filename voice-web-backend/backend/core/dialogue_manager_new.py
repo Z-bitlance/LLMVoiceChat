@@ -31,7 +31,10 @@ from core.voiceSpeak import VoiceSpeak
 #     print("无法导入必要模块，请确保agentChat.py和playMp3.py在正确的路径上")
 
 # TTS API地址
-TTS_API_URL = "http://localhost:51000/api/tts"
+from dotenv import load_dotenv
+# 加载环境变量
+load_dotenv('../.env')
+apiKey = os.getenv('dashscope_api_key')
 
 # 语音文件存储路径
 VOICE_DATA_DIR = Path("backend/static/audio")
@@ -46,7 +49,7 @@ class DialogueManager:
     def __init__(self):
 
         # 配置ASR SDK
-        dashscope.api_key = os.getenv("DASHSCOPE_API_KEY", "sk-d03c4fe2b7424948a9e3fbc698e35f6f")
+        dashscope.api_key = apiKey
 
         # 对话状态: 'idle', 'user_speaking', 'ai_speaking'
         self.state = "idle"
