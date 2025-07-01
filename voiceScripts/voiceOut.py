@@ -12,7 +12,7 @@ import threading
 import time
 
 # 设置API密钥
-dashscope.api_key = "sk-d03c4fe2b7424948a9e3fbc698e35f6f"
+dashscope.api_key = "your-api-key"
 
 # 创建输出目录
 OUTPUT_DIR = "../VoiceData"

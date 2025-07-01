@@ -6,7 +6,7 @@ from dashscope.audio.asr import *
 
 
 # 若没有将API Key配置到环境变量中，需将your-api-key替换为自己的API Key
-dashscope.api_key = "sk-d03c4fe2b7424948a9e3fbc698e35f6f"
+dashscope.api_key = "your-api-key"
 
 mic = None
 stream = None

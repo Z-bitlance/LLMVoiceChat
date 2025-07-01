@@ -379,7 +379,7 @@ class DialogueManager:
 # 主程序
 if __name__ == "__main__":
     # 确保API密钥已设置
-    dashscope.api_key = "sk-d03c4fe2b7424948a9e3fbc698e35f6f"
+    dashscope.api_key = "your-api-key"
 
     # 创建对话管理器
     manager = DialogueManager()

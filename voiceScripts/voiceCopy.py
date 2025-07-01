@@ -4,7 +4,7 @@ from dashscope.audio.tts_v2 import VoiceEnrollmentService, SpeechSynthesizer
 from dashscope.audio.tts_v2 import VoiceEnrollmentService
 import time
 
-Api_key = 'sk-d03c4fe2b7424948a9e3fbc698e35f6f'  # 如果您没有配置环境变量，请在此处用您的API-KEY进行替换
+Api_key = 'your-api-key'  # 如果您没有配置环境变量，请在此处用您的API-KEY进行替换
 
 # object,url
 # archive_yunli_24.wav,https://voice-training-data.oss-cn-beijing.aliyuncs.com/archive_yunli_24.wav?Expires=1749730696&OSSAccessKeyId=TMP.3KsPDe8bkfz4iXfFJDPaEckPJ4Z6irKw9RwUmGVHQzqcZBxMdvmwNHu45aH5hW2WDLSadYneZe8g6g3sYkRpox63XTES3S&Signature=3dCEtUW1XcpjHX2SNF08UJD0ZiA%3D

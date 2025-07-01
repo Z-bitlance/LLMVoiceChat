@@ -4,7 +4,7 @@ from dashscope import Application
 
 
 class AgentChat:
-    def __init__(self, api_key="sk-d03c4fe2b7424948a9e3fbc698e35f6f", app_id='e2eed5eed7bb4fa8a75a7b4cfc8fb235'):
+    def __init__(self, api_key="your-api-key", app_id='e2eed5eed7bb4fa8a75a7b4cfc8fb235'):
         """初始化聊天代理
 
         Args:
@@ -69,7 +69,7 @@ def call_with_session(text: str = '你是谁？'):
     print("chat_session: ", chat_session, '\n')
     if chat_session is None:
         response = Application.call(
-            api_key="sk-d03c4fe2b7424948a9e3fbc698e35f6f",
+            api_key="your-api-key",
             app_id='e2eed5eed7bb4fa8a75a7b4cfc8fb235',
             prompt=text,
         )
@@ -86,7 +86,7 @@ def call_with_session(text: str = '你是谁？'):
             return response.output.text
     else:
         responseNext = Application.call(
-            api_key="sk-d03c4fe2b7424948a9e3fbc698e35f6f",
+            api_key="your-api-key",
             app_id='e2eed5eed7bb4fa8a75a7b4cfc8fb235',
             prompt=text,
             session_id=chat_session
