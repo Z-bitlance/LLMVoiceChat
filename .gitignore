@@ -6,7 +6,7 @@ dist/
 wheels/
 *.egg-info
 /VoiceData
-.env
+
 
 # Virtual environments
 .venv/
@@ -17,3 +17,5 @@ voice-web-backend/backend/core/backend/static/
 *.mp3
 *.wav
 backend/
+voice-web-backend/backend/.env
+
