@@ -182,8 +182,7 @@ class ASRmanager:
                 audio_data = self.audio_buffer.get()
                 volume = sum(abs(int.from_bytes(audio_data[i:i + 2], 'little', signed=True))
                              for i in range(0, len(audio_data), 2)) / (len(audio_data) / 2)
-                # print(f"\rvolume: {volume:.4f}      ", end="", flush=True)
-                # print(f"volume: {volume:.4f}      ")
+                print(f"volume: {volume:.4f}      ")
                 # 根据音量判断用户是否在说话
                 if volume > silence_threshold:
                     talking_frames += 1

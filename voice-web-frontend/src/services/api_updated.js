@@ -204,6 +204,19 @@ export const recognizeVoice = async (audioData) => {
   return apiClient.post('/voice/recognize', { audio_data: audioData });
 };
 
+export const stopRecognizeVoice = async () => {
+  return apiClient.post('/voice/recognize/stop');
+};
+
+// 语音输出
+export const startTTS = async () => {
+  return apiClient.post('/voice/speak/start');
+};
+
+export const stopTTS = async () => {
+  return apiClient.post('/voice/speak/stop');
+}
+
 /**
  * 语音合成
  * @param {string} text 文本内容

@@ -8,19 +8,11 @@ wheels/
 /VoiceData
 
 # Virtual environments
-.venv
-.idea/.gitignore
-.idea/dataSources.local.xml
-.idea/dataSources.xml
-.idea/encodings.xml
-.idea/misc.xml
-.idea/modules.xml
-.idea/vcs.xml
-.idea/VoicePut.iml
-.idea/dataSources/
-.idea/inspectionProfiles/profiles_settings.xml
-.idea/inspectionProfiles/Project_Default.xml
-voice-web-backend/backend/backend/static/
+.venv/
+.idea/
 VoiceTextData/
 voice-web-frontend/node_modules/
-voice-web-backend/backend/core/backend/static
+voice-web-backend/backend/core/backend/static/
+*.mp3
+*.wav
+backend/

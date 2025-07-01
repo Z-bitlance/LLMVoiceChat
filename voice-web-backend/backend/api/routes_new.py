@@ -64,22 +64,38 @@ async def chat_with_ai(input_data: UserInput):
 
 
 @router.post("/voice/recognize")
-async def recognize_voice(audio_data: AudioData):
+async def recognize_voice():
     """处理语音识别请求"""
     try:
         # 获取对话管理器
         # dialogue_manager = get_dialogue_manager()
         
         # 处理音频数据
-        result =  dialogue_manager.process_one_time_audio(audio_data.audio_data)
-        
+        result =  dialogue_manager.charge(model="asr",choice="open")
+
         return {
-            "recognized_text": result,
+            "message": result,
             "status": "success"
         }
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
-
+    
+@router.post("/voice/recognize/stop")
+async def stop_recognize_voice():
+    """停止语音识别请求"""
+    try:
+        # 获取对话管理器
+        # dialogue_manager = get_dialogue_manager()
+        
+        # 停止语音识别
+        result = dialogue_manager.charge(model="asr", choice="close")
+        
+        return {
+            "message": result,
+            "status": "success"
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 @router.post("/voice/speak")
 async def synthesize_speech(input_data: UserInput):
@@ -98,6 +114,26 @@ async def synthesize_speech(input_data: UserInput):
         return {"audio_paths": audio_paths, "status": "success"}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.post("/voice/speak/start")
+async def synthesize_speech():
+    """处理语音合成请求"""
+    try:
+        result = dialogue_manager.charge(model="tts", choice="open")
+        return {"status": "success"}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+    
+@router.post("/voice/speak/stop")
+async def stop_synthesize_speech():
+    """处理停止语音合成请求"""
+    try:
+        result = dialogue_manager.charge(model="tts", choice="close")
+        return {"status": "success"}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
 
 
 @router.get("/roles")

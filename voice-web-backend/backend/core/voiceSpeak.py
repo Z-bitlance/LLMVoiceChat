@@ -24,8 +24,6 @@ class VoiceSpeak:
 
         self.player_lock = False
 
-        self.playing_complete_callback=None
-
         self.tts_request_count=0
 
         # 当前选择的角色
@@ -49,20 +47,38 @@ class VoiceSpeak:
         segments = re.split(r'(?<=[。！？.!?])', text)
         print("分割文本片段：", [str(i) for i in segments if i != ''])
         return [segment.strip() for segment in segments if segment != '']
-
     def interrupt_ai(self):
         """中断AI语音输出"""
         try:
             print("处理中断AI请求")
-            self.player.stop()  # 停止当前播放的音频'
+            
+            # 确保播放器正确初始化
+            if not self.ensure_player_initialized():
+                return {"status": "error", "message": "播放器初始化失败"}
+            
+            # 停止当前播放的音频
+            self.player.stop()
+              # 安全地检查播放是否完成
+            try:
+                if hasattr(self.player, 'is_complete') and not self.player.is_complete():
+                    self.player.__init__()
+            except Exception as e:
+                print(f"检查播放完成状态时出错: {e}")
+                # 重新初始化播放器
+                try:
+                    self.player.__init__()
+                except Exception as init_error:
+                    print(f"重新初始化播放器时出错: {init_error}")
+                    
+            # 设置锁定状态和停止缓冲线程
             self.player_lock = True
             self.buffer_thread_running = False
-            if not self.player.is_complete():
-                self.player.__init__()
+            
             return {"status": "success", "message": "AI响应已中断"}
         except Exception as e:
             print(f"中断AI时出错: {e}")
             return {"status": "error", "message": str(e)}
+
 
     def stream_speak(self, text):
         print("on test")
@@ -108,7 +124,7 @@ class VoiceSpeak:
             分段处理并播放AI回应
             创建音频缓冲池，将长文本分割为多个短句，依次合成音频并播放
             """
-        print(f"AI回答（stream）: {text}")
+        
         audio_urls = []
         # 创建音频文件队列
 
@@ -151,16 +167,23 @@ class VoiceSpeak:
                     else:
                         print(f"TTS API请求失败: {response.status_code}, {response.text}")
                 except Exception as e:
-                    print(f"处理音频段落时出错: {str(e)}")
-
+                    print(f"处理音频段落时出错: {str(e)}")        
         def audio_queue_play(audio_queue):
-            while self.buffer_thread_running and not self.player_lock:
+            while self.buffer_thread_running:
                 if audio_queue.empty():
                     time.sleep(0.2)
                 else:
                     try:
-                        # 等待播放完成
-                        while not self.player.is_complete() and self.buffer_thread_running:
+                        # 等待播放完成 - 安全检查
+                        while self.buffer_thread_running:
+                            try:
+                                if hasattr(self.player, 'is_complete') and not self.player.is_complete():
+                                    time.sleep(0.4)
+                                else:
+                                    break
+                            except Exception as e:
+                                print(f"检查播放状态时出错: {e}")
+                                break
                             time.sleep(0.4)
 
                         file_path = audio_queue.get()
@@ -203,16 +226,21 @@ class VoiceSpeak:
 
                 # 等待队列中的所有音频播放完毕
                 while not audio_queue.empty() and self.buffer_thread_running:
-                    time.sleep(0.2)
-
-                # 结束播放线程
+                    time.sleep(0.2)                # 结束播放线程
                 self.buffer_thread_running = False
             finally:
                 with self.buffer_thread_lock:
                     if self.buffer_thread_running:  # 只有在没被中断的情况下才重置状态
                         # self.state = "idle"
                         self.buffer_thread_running = False
-                self.playing_complete_callback()
+                # 安全调用回调函数
+                if self.playing_complete_callback and callable(self.playing_complete_callback):
+                    try:
+                        self.playing_complete_callback()
+                    except Exception as e:
+                        print(f"调用播放完成回调函数时出错: {e}")
+                else:
+                    print("播放完成回调函数未设置或不可调用")
 
         # 创建并启动音频处理线程
         with self.buffer_thread_lock:
@@ -224,7 +252,22 @@ class VoiceSpeak:
         self.playing_complete_callback = callback
         print("callback function has been set")
 
+    def ensure_player_initialized(self):
+        """确保播放器被正确初始化"""
+        if not hasattr(self, 'player') or self.player is None:
+            try:
+                self.player = MP3Player()
+                print("播放器已重新初始化")
+            except Exception as e:
+                print(f"重新初始化播放器失败: {e}")
+                return False
+        return True
+
 def test():
+    a = VoiceSpeak()
+    a.set_current_role({"id": "dongxuelian", "name": "东雪莲", "voice": "cosyvoice-v2-prefix-e929f25649664a16adaf04fc563870f6","character_id": "583dcf485ec14ae39733a0880daa2215"})
+
+
 
 
 

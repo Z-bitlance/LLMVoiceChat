@@ -1,5 +1,6 @@
 import os
 import time
+import json
 from http import HTTPStatus
 from dashscope import Application
 
@@ -20,6 +21,9 @@ class AgentChat:
         self.session_id = None
         self.last_response = None  # 添加存储最后回复的属性
 
+        # session_id回调函数
+        self.get_session_id_callback = None
+
     def select_character(self, character_id):
         """选择角色
 
@@ -29,8 +33,23 @@ class AgentChat:
         # if character_id < len(app_id) and app_id[character_id] is not self.app_id:
         self.app_id = character_id
         self.session_id = None  # 如果角色ID更改，重置会话ID
+        if self.get_session_id_callback:
+            self.get_session_id_callback(self.session_id)
 
-        print(f"已选择角色: {app_id}")
+        print(f"已选择角色: {self.app_id}")
+    def set_session_id(self, session_id):
+        """设置会话ID
+
+        Args:
+            session_id: 会话ID
+        """
+        self.session_id = session_id
+        if self.get_session_id_callback:
+            self.get_session_id_callback(self.session_id)
+        print(f"已设置会话ID: {self.session_id}")
+    def set_get_session_id_callback(self, callback):
+        """设置获取会话ID回调"""
+        self.get_session_id_callback = callback
 
     def send_message(self, text):
         """发送消息并获取响应
@@ -54,8 +73,13 @@ class AgentChat:
                 return self.last_response
             else:
                 self.session_id = response.output.session_id
+                if self.get_session_id_callback:
+                    self.get_session_id_callback(self.session_id)
                 self.last_response = response.output.text
                 # print(f'请求成功: , message={response.output.text}')
+                # 创建session_id对话文件记录
+                with open(f'backend/static/logs/sessionID_{self.session_id}.json', 'w') as f:
+                    json.dump({"SessionID": self.session_id, "Time": time.strftime('%Y-%m-%d %H:%M:%S')}, f, ensure_ascii=False, indent=2)
                 return self.last_response
         else:
             # 继续已有会话
@@ -77,6 +101,8 @@ class AgentChat:
     def reset_session(self):
         """重置会话，开始新的对话"""
         self.session_id = None
+        if self.get_session_id_callback:
+            self.get_session_id_callback(self.session_id)
 
 
 # 保持向后兼容的全局函数

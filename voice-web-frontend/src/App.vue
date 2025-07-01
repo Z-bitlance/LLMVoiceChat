@@ -49,6 +49,9 @@
             </h3>
             <div class="chat-actions">
               <export-chat :messages="messages" :selected-role="selectedRole" />
+              <button class="export-btn" @click="showExportOptions" title="开启语音输出">
+                <span>💬</span>
+              </button>
               <button class="clear-btn" @click="clearHistory" title="清除对话历史">
                 <span>🗑️</span>
               </button>
@@ -140,7 +143,8 @@
 // 导入更新版API
 import { 
   getRoles, sendChatMessage, recognizeVoice, synthesizeSpeech, 
-  setRole, directChatWithModel, directRecognizeVoice, interruptAI 
+  setRole, directChatWithModel, directRecognizeVoice, interruptAI,
+  stopRecognizeVoice,startTTS, stopTTS
 } from './services/api_updated';
 import AudioWaveform from './components/AudioWaveform.vue';
 import ThemeSwitcher from './components/ThemeSwitcher.vue';
@@ -179,6 +183,10 @@ export default {
       isRolesLoading: false,
       isResponseLoading: false,
       isVoiceProcessing: false,
+      // ASR状态
+      isASRActive: false,
+      // TTS状态
+      isTTSActive: false,
       // 错误状态
       error: null,
       // 当前会话ID
@@ -459,56 +467,85 @@ export default {
     
     // 开始录音
     async startRecording() {
-      if (this.isRecording || this.isResponseLoading) return;
+      recognizeVoice(); // 调用语音识别API
+      this.isASRActive = true; // 设置ASR状态为活动
+      this.isRecording = true; // 设置录音状态为活动
+      // if (this.isRecording || this.isResponseLoading) return;
       
-      try {
-        this.recognizedText = '';
-        this.error = null;
+      // try {
+      //   this.recognizedText = '';
+      //   this.error = null;
         
-        // 请求麦克风权限
-        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      //   // 请求麦克风权限
+      //   const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
         
-        // 创建MediaRecorder实例
-        this.mediaRecorder = new MediaRecorder(stream);
-        this.audioChunks = [];
+      //   // 创建MediaRecorder实例
+      //   this.mediaRecorder = new MediaRecorder(stream);
+      //   this.audioChunks = [];
         
-        // 监听数据可用事件
-        this.mediaRecorder.ondataavailable = (event) => {
-          this.audioChunks.push(event.data);
-        };
+      //   // 监听数据可用事件
+      //   this.mediaRecorder.ondataavailable = (event) => {
+      //     this.audioChunks.push(event.data);
+      //   };
         
-        // 监听录音停止事件
-        this.mediaRecorder.onstop = () => {
-          // 处理录音数据
-          this.processRecording();
+      //   // 监听录音停止事件
+      //   this.mediaRecorder.onstop = () => {
+      //     // 处理录音数据
+      //     this.processRecording();
           
-          // 停止所有音轨
-          stream.getTracks().forEach(track => track.stop());
-        };
+      //     // 停止所有音轨
+      //     stream.getTracks().forEach(track => track.stop());
+      //   };
         
-        // 开始录音
-        this.mediaRecorder.start();
-        this.isRecording = true;
+      //   // 开始录音
+      //   this.mediaRecorder.start();
+      //   this.isRecording = true;
         
-        // 10秒后自动停止录音
-        setTimeout(() => {
-          if (this.isRecording && this.mediaRecorder) {
-            this.stopRecording();
-          }
-        }, 10000);
-      } catch (error) {
-        console.error('无法访问麦克风:', error);
-        this.error = '无法访问麦克风';
-        alert('无法访问麦克风，请确保已授予麦克风权限。');
-      }
+      //   // 10秒后自动停止录音
+      //   setTimeout(() => {
+      //     if (this.isRecording && this.mediaRecorder) {
+      //       this.stopRecording();
+      //     }
+      //   }, 10000);
+      // } catch (error) {
+      //   console.error('无法访问麦克风:', error);
+      //   this.error = '无法访问麦克风';
+      //   alert('无法访问麦克风，请确保已授予麦克风权限。');
+      // }
     },
     
     // 停止录音
     stopRecording() {
-      if (this.mediaRecorder && this.isRecording) {
-        this.mediaRecorder.stop();
-        this.isRecording = false;
-        this.isVoiceProcessing = true;
+      // if (this.mediaRecorder && this.isRecording) {
+      //   this.mediaRecorder.stop();
+        stopRecognizeVoice(); // 停止语音识别API调用
+        this.isASRActive = false; // 设置ASR状态为非活动
+        this.isRecording = false; // 设置录音状态为非活动
+      //   this.isRecording = false;
+      //   this.isVoiceProcessing = true;
+      // }
+    },
+
+    showExportOptions() {
+      // 显示提示框，询问用户是否要切换语音输出状态
+      const currentState = this.isTTSActive ? "开启" : "关闭";
+      const newState = this.isTTSActive ? "关闭" : "开启";
+      
+      if (confirm(`语音输出当前为${currentState}状态。是否${newState}语音输出？`)) {
+      if (this.isTTSActive) {
+        stopTTS(); // 停止语音合成
+        this.isTTSActive = false;
+        this.error = null; // 清除可能的错误
+        // 显示通知
+        alert("已关闭语音输出功能");
+      }
+      else {
+        startTTS(); // 开始语音合成
+        this.isTTSActive = true;
+        this.error = null; // 清除可能的错误
+        // 显示通知
+        alert("已开启语音输出功能，系统将自动播放回复内容");
+      }
       }
     },
       // 处理录音数据

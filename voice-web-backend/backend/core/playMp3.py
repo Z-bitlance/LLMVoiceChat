@@ -8,6 +8,7 @@ import argparse
 
 from arcade import load_sound, play_sound, stop_sound
 
+
 # sound = load_sound("1.mp3")
 # # 开始播放
 # player = play_sound(sound)
@@ -24,14 +25,16 @@ class MP3Player:
         self.process = None
         self.pygame_initialized = False
 
-        self.sound=None
-        self.arcade_player=None
+        self.sound = None
+        self.arcade_player = None
 
     def is_complete(self):
-
-        if self.sound:
-            return self.sound.is_complete(self.arcade_player)
-        else:
+        try:
+            if self.sound:
+                return self.sound.is_complete(self.arcade_player)
+            else:
+                return True
+        except:
             return True
 
     def play(self, file_path, method='arcade'):
@@ -57,8 +60,8 @@ class MP3Player:
             self.sound = load_sound(file_path)
             # 开始播放
             self.arcade_player = play_sound(self.sound)
-            #返回音频长度
-            return self.sound,self.arcade_player
+            # 返回音频长度
+            return self.sound, self.arcade_player
 
         elif method == 'playsound':
             self.play_thread = threading.Thread(target=self._play_with_playsound, args=(file_path,))
@@ -83,7 +86,6 @@ class MP3Player:
 
         # 停止arcade播放
         if self.arcade_player:
-
             stop_sound(self.arcade_player)
             self.arcade_player = None
 
